@@ -17,7 +17,7 @@ type GameCube() =
         let rb = this.GetComponent<Rigidbody>()
         material <- this.GetComponent<Renderer>().material
         audioSource <- this.GetComponent<AudioSource>()
-        rb.angularVelocity <- Random.insideUnitSphere * 1.001f
+        //rb.angularVelocity <- Random.insideUnitSphere * 1.001f
         this.Deactivate()
 
     member this.Update() =

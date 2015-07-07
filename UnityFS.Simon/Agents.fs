@@ -47,12 +47,13 @@ module Agents =
                             cubeBus.PostAndReply(fun reply -> DeactivateColor (color, reply))
                             replyChannel.Reply()
                         | ComputerColors (colors, duration, replyChannel) ->
-                            do! Async.Sleep (500)
+                            do! Async.Sleep (750)
                             for color in colors do
                                 cubeBus.PostAndReply(fun reply -> ActivateColor (color, reply))
                                 do! Async.Sleep (int duration)
                                 cubeBus.PostAndReply(fun reply -> DeactivateColor (color, reply))
-                                do! Async.Sleep (250)
+
+                                do! Async.Sleep (int duration)
                             replyChannel.Reply()
 
                         | _ -> ()

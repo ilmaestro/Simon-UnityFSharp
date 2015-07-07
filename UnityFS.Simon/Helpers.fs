@@ -14,13 +14,6 @@ module Helpers =
         let rnd = new System.Random()
         [for _ in 1..round -> (intToColor (rnd.Next(1,5)))]
 
-    let colorToPitch color transpose =
-        match color with
-        | SimonColor.Red -> Mathf.Pow(2.f, (4.0f + transpose) / 12.0f);
-        | SimonColor.Green -> Mathf.Pow(2.f, (12.0f + transpose) / 12.0f);
-        | SimonColor.Blue -> Mathf.Pow(2.f, (7.0f + transpose) / 12.0f);
-        | _ -> Mathf.Pow(2.f, (0.0f + transpose) / 12.0f);
-
     let FindGameCubeByColor (cubes: UnityFS.Simon.GameCubeBase[]) (c: SimonColor) =
         let result =
             cubes

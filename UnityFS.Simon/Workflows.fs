@@ -6,13 +6,12 @@ module Workflows =
     open UnityFS.Simon.Agents
     open UnityEngine
 
-    let gameWorkflow(maxRounds: int, startEvt: Event<GameCubeBase[]>, mouseEvt: Event<SimonColor>) = async {
+    let gameWorkflow(maxRounds: int, startEvt: Event<GameCubeBase[]>, mouseEvt: Event<SimonColor>, roundUpdater: (int -> unit)) = async {
         let! cubes = Async.AwaitEvent startEvt.Publish
         let agents = agentBus<Message>
         let theBus =
             agents
-            |> piezoEmitter
-            |> (ledEmitter cubes)
+            |> (cubeHandler cubes)
             |> (buttonListener mouseEvt)
             |> outputHandler
         let output = theBus.TryFind("output").Value
@@ -23,10 +22,10 @@ module Workflows =
                 
             let duration =
                 match state with
-                | Start (r, _) -> 1000.0f<ms>
-                | NextGuess (r, list, g) -> 1000.0f<ms> - ((float32 r) * 100.0f<ms>)
+                | Start (r, _) -> 1100.0f<ms> - ((float32 r) * (1000.0f<ms> / (float32 maxRounds)))
+                | NextGuess (r, list, g) -> 250.0f<ms>
                 | _ -> 1000.0f<ms>
-
+     
             let nextstate =
                 match state with
                 | NewGame rnds ->
@@ -36,9 +35,9 @@ module Workflows =
                     Start (1, list)
                 | Start (r, list) ->
                     //Start a new round, play the computer colors for this round
-                    for i in 1..r do
-                        let c = list.Item (i-1)
-                        output.PostAndReply(fun replyChannel -> (ComputerColor (c, duration, replyChannel)))
+                    roundUpdater(r)
+                    let colors = [for i in 1..r -> list.[i-1]]
+                    output.PostAndReply(fun replyChannel -> (ComputerColors (colors, duration, replyChannel)))
                     ComputerPlayed (r, list)
                 | ComputerPlayed (r, list) -> 
                     NextGuess (r, list, 0)
@@ -61,7 +60,7 @@ module Workflows =
                 | Lose -> NewGame maxRounds
                 | _ -> Invalid
 
-            do! Async.Sleep 100 //minimum time between movements
+            do! Async.Sleep 10 //minimum time between movements
             return! gameLoop(nextstate)  
             }
         return! gameLoop (NewGame maxRounds)

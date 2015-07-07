@@ -49,7 +49,7 @@ type GameState =
 type Message =
 | ChooseColor of AsyncReplyChannel<SimonColor>
 | PlayerColor of SimonColor * float32<ms> * AsyncReplyChannel<unit>
-| ComputerColor of SimonColor * float32<ms> * AsyncReplyChannel<unit>
+| ComputerColors of SimonColor list * float32<ms> * AsyncReplyChannel<unit>
 | ActivateColor of SimonColor * AsyncReplyChannel<unit>
 | DeactivateColor of SimonColor * AsyncReplyChannel<unit>
     

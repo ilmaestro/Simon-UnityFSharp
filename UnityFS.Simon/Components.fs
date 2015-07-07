@@ -3,22 +3,20 @@ open UnityEngine
 open UnityFS.Simon.Helpers
 open UnityFS.Simon.Agents
 open UnitFS.Simon.Workflows
+open UnityEngine.UI
 
 type GameCube() =
     inherit GameCubeBase()
     
     let mutable isActive = false
     let mutable wasActive = true
-
-    [<DefaultValue>]
-    val mutable renderer : Renderer
-    [<DefaultValue>]
-    val mutable audioSource : AudioSource
+    let mutable material = Unchecked.defaultof<Material>
+    let mutable audioSource = Unchecked.defaultof<AudioSource>
     
     member this.Start() =
         let rb = this.GetComponent<Rigidbody>()
-        this.renderer <- this.GetComponent<Renderer>()
-        this.audioSource <- this.GetComponent<AudioSource>()
+        material <- this.GetComponent<Renderer>().material
+        audioSource <- this.GetComponent<AudioSource>()
         rb.angularVelocity <- Random.insideUnitSphere * 1.001f
         this.Deactivate()
 
@@ -31,13 +29,12 @@ type GameCube() =
                 | SimonColor.Blue -> UnityEngine.Color.blue
                 | SimonColor.Green -> UnityEngine.Color.green
                 | _ -> UnityEngine.Color.yellow
-            //this.audioSource.pitch <- (colorToPitch this.CubeColor -4.0f)
-            this.audioSource.Play()
-            this.renderer.material.SetColor("_Color", cubeMaterialColor)
+            audioSource.Play()
+            material.SetColor("_Color", cubeMaterialColor)
             wasActive <- true
         | false, true -> 
-            this.audioSource.Stop()
-            this.renderer.material.SetColor("_Color", UnityEngine.Color.black)
+            audioSource.Stop()
+            material.SetColor("_Color", UnityEngine.Color.black)
             wasActive <- false
         | _,_ -> ()
     
@@ -53,6 +50,8 @@ type GameController() =
 
     [<SerializeField>][<DefaultValue>]
     val mutable MaxRounds: int
+    [<SerializeField>][<DefaultValue>]
+    val mutable roundText : Text
 
     let startEvt = Event<GameCubeBase[]>()
     let mouseEvt = Event<SimonColor>()
@@ -71,6 +70,8 @@ type GameController() =
                 let gc = hit.transform.GetComponent<GameCube>()
                 mouseEvt.Trigger gc.CubeColor
             | _ -> ()
+    member this.UpdateRound(round) =
+        this.roundText.text <- "Round: " + round.ToString() + " of " + this.MaxRounds.ToString()
 
     member this.Awake() =
-        gameWorkflow(this.MaxRounds, startEvt, mouseEvt) |> Async.StartImmediate |> ignore
+        gameWorkflow(this.MaxRounds, startEvt, mouseEvt, (fun i -> this.UpdateRound(i))) |> Async.StartImmediate |> ignore

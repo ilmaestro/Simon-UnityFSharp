@@ -14,7 +14,8 @@ type EventBus<'T> = Map<string, Event<'T>>
 [<Measure>] type dB
 [<Measure>] type ms
 
-type Note = {frequency: float32<Hz>; volume: float32<dB>; duration: float32<ms>}
+type Note = {pitch: float32<Hz>; volume: float32<dB>; duration: float32<ms>}
+
 type SimonColor =
 | Red = 0
 | Blue = 1

@@ -8,14 +8,17 @@ type GameCube() =
     inherit GameCubeBase()
     
     let mutable isActive = false
-    let mutable wasActive = false
+    let mutable wasActive = true
 
     [<DefaultValue>]
     val mutable renderer : Renderer
+    [<DefaultValue>]
+    val mutable audioSource : AudioSource
     
     member this.Start() =
         let rb = this.GetComponent<Rigidbody>()
         this.renderer <- this.GetComponent<Renderer>()
+        this.audioSource <- this.GetComponent<AudioSource>()
         rb.angularVelocity <- Random.insideUnitSphere * 1.001f
         this.Deactivate()
 
@@ -28,9 +31,12 @@ type GameCube() =
                 | SimonColor.Blue -> UnityEngine.Color.blue
                 | SimonColor.Green -> UnityEngine.Color.green
                 | _ -> UnityEngine.Color.yellow
+            //this.audioSource.pitch <- (colorToPitch this.CubeColor -4.0f)
+            this.audioSource.Play()
             this.renderer.material.SetColor("_Color", cubeMaterialColor)
             wasActive <- true
         | false, true -> 
+            this.audioSource.Stop()
             this.renderer.material.SetColor("_Color", UnityEngine.Color.black)
             wasActive <- false
         | _,_ -> ()

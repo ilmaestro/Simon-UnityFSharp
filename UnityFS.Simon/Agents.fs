@@ -80,7 +80,7 @@ module Agents =
                     }
             ))
 
-    let buttonListener (buttonEvt: Event<UnityFS.Simon.Color>) (agents: AgentBus<Message>) =
+    let buttonListener (buttonEvt: Event<UnityFS.Simon.SimonColor>) (agents: AgentBus<Message>) =
         agents.Add("buttons", Agent<Message>.Start(fun inbox ->
                 async {
                     while true do

@@ -4,10 +4,10 @@ module Helpers =
 
     let intToColor int =
         match int with
-        | 1 -> UnityFS.Simon.Color.Red
-        | 2 -> UnityFS.Simon.Color.Green
-        | 3 -> UnityFS.Simon.Color.Blue
-        | _ -> UnityFS.Simon.Color.Yellow
+        | 1 -> UnityFS.Simon.SimonColor.Red
+        | 2 -> UnityFS.Simon.SimonColor.Green
+        | 3 -> UnityFS.Simon.SimonColor.Blue
+        | _ -> UnityFS.Simon.SimonColor.Yellow
 
     let randomColorSequence round =
         let rnd = new System.Random()
@@ -15,13 +15,13 @@ module Helpers =
 
     let colorToSound color duration =
         match color with
-        | UnityFS.Simon.Color.Red -> {frequency = 440.0f<Hz>; volume = 30.0f<dB>; duration = duration }
-        | UnityFS.Simon.Color.Green -> {frequency = 440.0f<Hz>; volume = 30.0f<dB>; duration = duration }
-        | UnityFS.Simon.Color.Blue -> {frequency = 440.0f<Hz>; volume = 30.0f<dB>; duration = duration }
-        | UnityFS.Simon.Color.Yellow -> {frequency = 440.0f<Hz>; volume = 30.0f<dB>; duration = duration }
+        | UnityFS.Simon.SimonColor.Red -> {frequency = 440.0f<Hz>; volume = 30.0f<dB>; duration = duration }
+        | UnityFS.Simon.SimonColor.Green -> {frequency = 440.0f<Hz>; volume = 30.0f<dB>; duration = duration }
+        | UnityFS.Simon.SimonColor.Blue -> {frequency = 440.0f<Hz>; volume = 30.0f<dB>; duration = duration }
+        | UnityFS.Simon.SimonColor.Yellow -> {frequency = 440.0f<Hz>; volume = 30.0f<dB>; duration = duration }
         | _ -> {frequency = 440.0f<Hz>; volume = 30.0f<dB>; duration = duration }
 
-    let FindGameCubeByColor (cubes: UnityFS.Simon.GameCubeBase[]) (c: UnityFS.Simon.Color) =
+    let FindGameCubeByColor (cubes: UnityFS.Simon.GameCubeBase[]) (c: UnityFS.Simon.SimonColor) =
         let result =
             cubes
             |> Array.filter (fun cube -> cube.CubeColor = c)
@@ -30,3 +30,4 @@ module Helpers =
 
     let agentBus<'T> : AgentBus<'T> = Map.empty<string, Agent<'T>>
     let eventBus<'T> : EventBus<'T> = Map.empty<string, Event<'T>>
+

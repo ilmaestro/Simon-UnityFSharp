@@ -15,14 +15,14 @@ type EventBus<'T> = Map<string, Event<'T>>
 [<Measure>] type ms
 
 type Note = {frequency: float32<Hz>; volume: float32<dB>; duration: float32<ms>}
-type Color =
+type SimonColor =
 | Red = 0
 | Blue = 1
 | Green = 2
 | Yellow = 3
 
 type Button =
-| On of Color
+| On of SimonColor
 | Off
 
 type Round = int
@@ -36,21 +36,21 @@ type RoundState =
 
 type GameState =
 | NewGame of Round
-| Start of Round * Color list
-| PlayerGuessed of Round * Color list * GuessResult
-| NextGuess of Round * Color list * Guess
-| ComputerPlayed of Round * Color list
-| NextRound of Round * Color list
+| Start of Round * SimonColor list
+| PlayerGuessed of Round * SimonColor list * GuessResult
+| NextGuess of Round * SimonColor list * Guess
+| ComputerPlayed of Round * SimonColor list
+| NextRound of Round * SimonColor list
 | Win
 | Lose
 | Invalid
 
 type Message =
-| ChooseColor of AsyncReplyChannel<Color>
-| PlayerColor of Color * float32<ms> * AsyncReplyChannel<unit>
-| ComputerColor of Color * float32<ms> * AsyncReplyChannel<unit>
-| ActivateColor of Color * AsyncReplyChannel<unit>
-| DeactivateColor of Color * AsyncReplyChannel<unit>
+| ChooseColor of AsyncReplyChannel<SimonColor>
+| PlayerColor of SimonColor * float32<ms> * AsyncReplyChannel<unit>
+| ComputerColor of SimonColor * float32<ms> * AsyncReplyChannel<unit>
+| ActivateColor of SimonColor * AsyncReplyChannel<unit>
+| DeactivateColor of SimonColor * AsyncReplyChannel<unit>
     
 type IGameCube =
     abstract member Activate : unit -> unit
@@ -60,7 +60,7 @@ type GameCubeBase() =
     inherit MonoBehaviour()
 
     [<SerializeField>][<DefaultValue>]
-    val mutable CubeColor: Color
+    val mutable CubeColor: SimonColor
 
     abstract member Activate: unit -> unit
     abstract member Deactivate: unit -> unit
